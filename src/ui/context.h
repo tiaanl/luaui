@@ -8,6 +8,12 @@
 #include "gfx/size.h"
 #include "ui/context_view.h"
 
+extern "C" {
+#include "lua.h"
+#include "lauxlib.h"
+#include "lualib.h"
+}
+
 class Context {
 public:
   Context();
@@ -18,6 +24,8 @@ public:
 
 protected:
   ContextView m_contextView;
+
+  lua_State* m_luaState;
 };
 
 #endif  // UI_CONTEXT_H_

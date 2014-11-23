@@ -36,5 +36,5 @@ set(SRC_LIB
   "src/linit.c"
   )
 
-add_library("lua" ${SRC_CORE} ${SRC_LIB})
+add_library("lua" ${SRC_CORE} ${SRC_LIB} "src/loadlib.c")
 set_target_properties("lua" PROPERTIES COMPILE_FLAGS "-D_CRT_SECURE_NO_WARNINGS")

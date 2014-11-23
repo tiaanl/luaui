@@ -4,6 +4,7 @@ cmake_minimum_required(VERSION 2.8)
 # lua
 
 add_subdirectory("third_party/lua-5.2.3")
+include_directories("${luaui_SOURCE_DIR}/third_party/lua-5.2.3/src")
 
 # sfml
 
@@ -21,5 +22,5 @@ file(GLOB_RECURSE SRC_LUAUI "src/*.cpp" "src/*.h")
 include_directories("src")
 
 add_definitions("-DSFML_STATIC")
-add_executable("luaui" WIN32 ${SRC_LUAUI})
+add_executable("luaui" ${SRC_LUAUI})
 target_link_libraries("luaui" "lua" "sfml-main" "sfml-system" "sfml-graphics")
