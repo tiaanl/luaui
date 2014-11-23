@@ -2,11 +2,15 @@
 
 #include "ui/group_view.h"
 
-GroupView::GroupView(Context* context) : View(context) {}
+GroupView::GroupView(Context* context) : View(context) {
+}
 
-GroupView::~GroupView() {}
+GroupView::~GroupView() {
+}
 
-void GroupView::AddChild(View* view) { m_children.push_back(view); }
+void GroupView::AddChild(View* view) {
+  m_children.push_back(view);
+}
 
 void GroupView::RemoveChild(View* view) {
   auto it = std::find(std::begin(m_children), std::end(m_children), view);

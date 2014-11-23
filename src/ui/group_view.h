@@ -15,8 +15,6 @@ public:
   void AddChild(View* view);
   void RemoveChild(View* view);
 
-  virtual void LayoutChildren(const Rect<int32_t>& rect) = 0;
-
   // Override: View
   virtual void Render(sf::RenderTarget* target) override;
 

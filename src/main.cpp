@@ -11,9 +11,9 @@ int main() {
     sf::Event evt;
     while (window.pollEvent(evt)) {
       switch (evt.type) {
-      case sf::Event::Closed:
-        window.close();
-        break;
+        case sf::Event::Closed:
+          window.close();
+          break;
       }
 
       sf::Vector2u clientSize = window.getSize();

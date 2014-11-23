@@ -19,7 +19,7 @@ public:
   const Size<int32_t>& GetMinSize() const { return m_minSize; }
   void SetMinSize(const Size<int32_t>& minSize);
 
-  virtual Size<int32_t> CalculateMinSize();
+  virtual Size<int32_t> CalculateMinSize() const;
   virtual void Layout(const Rect<int32_t>& rect);
   virtual void Render(sf::RenderTarget* target);
 

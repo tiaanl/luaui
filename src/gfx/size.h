@@ -11,6 +11,11 @@ struct Size {
   Size() : width(0), height(0) {}
 
   Size(T width, T height) : width(width), height(height) {}
+
+  void GrowTo(const Size<int32_t>& size) {
+    width = std::max(width, size.width);
+    height = std::max(height, size.height);
+  }
 };
 
 #endif  // GFX_SIZE_H_

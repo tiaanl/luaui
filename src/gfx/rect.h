@@ -15,7 +15,7 @@ struct Rect {
 
   Rect(T x, T y, T width, T height) : pos(x, y), size(width, height) {}
 
-  Rect(const Position<T> &pos, const Size<T> &size) : pos(pos), size(size) {}
+  Rect(const Position<T>& pos, const Size<T>& size) : pos(pos), size(size) {}
 };
 
 #endif  // GFX_RECT_H_
