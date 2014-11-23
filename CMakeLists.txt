@@ -17,9 +17,8 @@ include_directories("${SFML_ROOT_DIR}/include")
 
 # luaui
 
-set(SRC_LUAUI
-  "src/main.cpp"
-  )
+file(GLOB_RECURSE SRC_LUAUI "src/*.cpp" "src/*.h")
+include_directories("src")
 
 add_definitions("-DSFML_STATIC")
 add_executable("luaui" WIN32 ${SRC_LUAUI})

@@ -1,11 +1,11 @@
 
+#include "demo_context.h"
 #include "SFML/Graphics.hpp"
 
 int main() {
   sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Lua UI");
 
-  sf::CircleShape circle(50.0f);
-  circle.setPosition(100.0f, 100.0f);
+  DemoContext context;
 
   while (window.isOpen()) {
     sf::Event evt;
@@ -16,7 +16,11 @@ int main() {
         break;
       }
 
-      window.draw(circle);
+      sf::Vector2u clientSize = window.getSize();
+
+      context.Layout(Rect<int32_t>(Position<int32_t>(),
+                                   Size<int32_t>(clientSize.x, clientSize.y)));
+      context.Render(&window);
 
       window.display();
     }
