@@ -13,7 +13,7 @@ public:
   Context();
   ~Context();
 
-  void Layout(const Rect<int32_t>& size);
+  void Layout(const RectI& size);
   void Render(sf::RenderTarget* target);
 
 protected:

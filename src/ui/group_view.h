@@ -9,6 +9,9 @@
 
 class GroupView : public View {
 public:
+  static RectI LayoutControlInRect(View* view,
+                                           const RectI& rect);
+
   explicit GroupView(Context* context);
   virtual ~GroupView();
 

@@ -18,7 +18,7 @@ public:
   void SetColor(const Color& color);
 
   // Override: View
-  virtual void Layout(const Rect<int32_t>& rect) override;
+  virtual void Layout(const RectI& rect) override;
   virtual void Render(sf::RenderTarget* target) override;
 
 private:

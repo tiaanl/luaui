@@ -14,16 +14,25 @@ int main() {
         case sf::Event::Closed:
           window.close();
           break;
+
+        case sf::Event::Resized: {
+          sf::View view(window.getView());
+          view.setCenter(static_cast<float>(evt.size.width) / 2.0f,
+                         static_cast<float>(evt.size.height) / 2.0f);
+          view.setSize(static_cast<float>(evt.size.width),
+                       static_cast<float>(evt.size.height));
+          window.setView(view);
+          break;
+        }
       }
-
-      sf::Vector2u clientSize = window.getSize();
-
-      context.Layout(Rect<int32_t>(Position<int32_t>(),
-                                   Size<int32_t>(clientSize.x, clientSize.y)));
-      context.Render(&window);
-
-      window.display();
     }
+
+    sf::Vector2u clientSize = window.getSize();
+
+    context.Layout(RectI(PositionI(), SizeI(clientSize.x, clientSize.y)));
+    context.Render(&window);
+
+    window.display();
   }
 
   return 0;

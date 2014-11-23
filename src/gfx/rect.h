@@ -18,4 +18,6 @@ struct Rect {
   Rect(const Position<T>& pos, const Size<T>& size) : pos(pos), size(size) {}
 };
 
+typedef Rect<int32_t> RectI;
+
 #endif  // GFX_RECT_H_

@@ -11,9 +11,6 @@ class DemoContext : public Context {
 public:
   DemoContext();
   ~DemoContext();
-
-private:
-  ColorView* m_background;
 };
 
 #endif  // DEMO_CONTEXT_H_

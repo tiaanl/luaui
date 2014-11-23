@@ -13,4 +13,6 @@ struct Position {
   Position(T x, T y) : x(x), y(y) {}
 };
 
+typedef Position<int32_t> PositionI;
+
 #endif  // GFX_POSITION_H_

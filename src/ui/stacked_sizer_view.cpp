@@ -8,14 +8,16 @@ StackedSizerView::StackedSizerView(Context* context) : GroupView(context) {
 StackedSizerView::~StackedSizerView() {
 }
 
-Size<int32_t> StackedSizerView::CalculateMinSize() const {
-  Size<int32_t> minSize(GroupView::CalculateMinSize());
+SizeI StackedSizerView::CalculateMinSize() const {
+  SizeI minSize(GroupView::CalculateMinSize());
   for (auto& child : m_children)
     minSize.GrowTo(child->CalculateMinSize());
   return minSize;
 }
 
-void StackedSizerView::Layout(const Rect<int32_t>& rect) {
+void StackedSizerView::Layout(const RectI& rect) {
+  GroupView::Layout(rect);
+
   for (auto& child : m_children)
-    child->Layout(rect);
+    child->Layout(GroupView::LayoutControlInRect(child, rect));
 }

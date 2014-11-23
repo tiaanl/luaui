@@ -11,8 +11,8 @@ public:
   virtual ~StackedSizerView();
 
   // Implement: GroupView
-  virtual Size<int32_t> CalculateMinSize() const override;
-  virtual void Layout(const Rect<int32_t>& rect) override;
+  virtual SizeI CalculateMinSize() const override;
+  virtual void Layout(const RectI& rect) override;
 };
 
 #endif  // UI_STACKED_SIZER_VIEW_H_

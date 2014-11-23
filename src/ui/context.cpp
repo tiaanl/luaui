@@ -8,7 +8,7 @@ Context::Context() : m_contextView(this) {
 Context::~Context() {
 }
 
-void Context::Layout(const Rect<int32_t>& rect) {
+void Context::Layout(const RectI& rect) {
   m_contextView.Layout(rect);
 }
 

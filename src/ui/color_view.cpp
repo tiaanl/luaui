@@ -17,7 +17,9 @@ void ColorView::SetColor(const Color& color) {
   m_drawable.setFillColor(sf::Color(color.r, color.g, color.b, color.a));
 }
 
-void ColorView::Layout(const Rect<int32_t>& rect) {
+void ColorView::Layout(const RectI& rect) {
+  View::Layout(rect);
+
   m_drawable.setPosition(sf::Vector2f(static_cast<float>(rect.pos.x),
                                       static_cast<float>(rect.pos.y)));
   m_drawable.setSize(sf::Vector2f(static_cast<float>(rect.size.width),

@@ -7,6 +7,6 @@ AccessModifierOffset: -2
 #AllowShortLoopsOnASingleLine: false
 #AllowShortFunctionsOnASingleLine: false
 #ConstructorInitializerAllOnOneLineOrOnePerLine: false
-#ConstructorInitializerIndentWidth: 2
+ConstructorInitializerIndentWidth: 2
 
 
