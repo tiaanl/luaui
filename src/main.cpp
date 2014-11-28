@@ -6,6 +6,7 @@ int main() {
   sf::RenderWindow window(sf::VideoMode(800, 600, 32), "Lua UI");
 
   DemoContext context;
+  context.Start();
 
   while (window.isOpen()) {
     sf::Event evt;
@@ -34,6 +35,8 @@ int main() {
 
     window.display();
   }
+
+  context.Stop();
 
   return 0;
 }

@@ -1,5 +1,9 @@
 
-local player_1 = get_player("player_1")
-
-player_1:SetHealth(10)
-print(player_1:GetHealth())
+ui.start = function()
+  print("[")
+  view = ui.getView("child")
+  print(view)
+  print(type(view))
+  print(getmetatable(view))
+  print("]")
+end

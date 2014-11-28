@@ -4,9 +4,11 @@
 #define UI_VIEW_H_
 
 #include <cstdint>
+#include <string>
 
 #include "gfx/rect.h"
 #include "SFML/Graphics/RenderTarget.hpp"
+#include "script/script.h"
 
 class Context;
 
@@ -29,6 +31,13 @@ public:
 
   explicit View(Context* context);
   virtual ~View();
+
+  // Push an instance of this view onto the given script VM.
+  void PushInstance(lua_State* L);
+
+  // name
+  const std::string GetName() const { return m_name; }
+  void SetName(const std::string& name);
 
   // minsize
   const SizeI& GetMinSize() const { return m_minSize; }
@@ -56,6 +65,9 @@ protected:
 
   // The rect where this view has been layed out to.
   RectI m_rect;
+
+  // The name of the control.  This can remain empty for anonymous controls.
+  std::string m_name;
 
   // The minimum size of the view.
   SizeI m_minSize;

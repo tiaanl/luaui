@@ -7,11 +7,11 @@
 #include <iostream>
 #include <map>
 
-extern "C" {
-#include "lua.h"
-#include "lauxlib.h"
-#include "lualib.h"
-}
+#include "ui/context.h"
+
+namespace {
+
+static const char* kUILibName = "ui";
 
 static int StackDump(lua_State* state) {
   std::cout << "--[[" << std::endl;
@@ -48,107 +48,117 @@ static int StackDump(lua_State* state) {
   return 0;
 }
 
-class Player {
-public:
-  static int l_Player_GetHealth(lua_State* state) {
-    // Get the parameters.
-    Player* player = *static_cast<Player**>(lua_touserdata(state, -1));
+static int l_getView(lua_State* L) {
+  // Read parameters.
+  const char* viewName = lua_tostring(L, -1);
 
-    // Return the health value.
-    lua_pushnumber(state, player->GetHealth());
-    return 1;
-  }
+  // Get the context pointer from the globals.
+  lua_getglobal(L, "context");
+  assert(lua_isuserdata(L, -1));
+  Context* context = static_cast<Context*>(lua_touserdata(L, -1));
 
-  static int l_Player_SetHealth(lua_State* state) {
-    // Get the parameters.
-    Player* player = *static_cast<Player**>(lua_touserdata(state, -2));
-    int32_t health = lua_tonumber(state, -1);
+  View* view = context->FindView(viewName);
 
-    // Set he new health.
-    player->SetHealth(health);
-
-    return 0;
-  }
-
-  // Create the metatable that represents this class in lua.
-  static void RegisterClass(lua_State* state) {
-    luaL_newmetatable(state, "Player");
-
-    // Player.__index = Player
-    lua_pushvalue(state, -1);
-    lua_setfield(state, -2, "__index");
-
-    // Player.get_health = function()
-    lua_pushcfunction(state, l_Player_GetHealth);
-    lua_setfield(state, -2, "GetHealth");
-
-    // Player.set_health = function(health)
-    lua_pushcfunction(state, l_Player_SetHealth);
-    lua_setfield(state, -2, "SetHealth");
-  }
-
-  explicit Player(int32_t health) : m_health(health) {}
-  ~Player();
-
-  int32_t GetHealth() const { return m_health; }
-  void SetHealth(int32_t health) { m_health = health; }
-
-private:
-  int32_t m_health;
-};
-
-std::map<std::string, Player*> g_players;
-
-int l_get_player(lua_State* state) {
-  // Get the name of the player.
-  const char* paramName = luaL_checkstring(state, 1);
-
-  // The Player we will return.
-  Player* result = nullptr;
-
-  // Get the player from the map.
-  auto it = g_players.find(paramName);
-  if (it == std::end(g_players)) {
-    // The player doesn't exist, so create a new one.
-    result = new Player(100);
-    g_players.insert(std::make_pair(paramName, result));
+  if (view) {
+    view->PushInstance(L);
   } else {
-    result = it->second;
+    lua_pushnil(L);
   }
-
-  assert(result);
-
-  Player** instance = (Player**)lua_newuserdata(state, sizeof(Player*));
-  *instance = result;
-
-  // Push the Player metatable onto the stack.
-  luaL_getmetatable(state, "Player");
-
-  // Set the player instance's metatable to Player.
-  lua_setmetatable(state, -2);
 
   return 1;
 }
 
-Script::Script() {
-  m_state = luaL_newstate();
+static int l_View_getName(lua_State* L) {
+  // Get the View object.
+  View* view = static_cast<View*>(lua_touserdata(L, -1));
 
-  luaL_openlibs(m_state);
+  // Push the name onto the stack.
+  lua_pushstring(L, view->GetName().data());
+  return 1;
+}
 
-  // the_num = 100
-  lua_pushnumber(m_state, 100);
-  lua_setglobal(m_state, "the_num");
+static const luaL_Reg kViewFunctions[] = {
+  {"getName", l_View_getName},
+  {0, 0},
+};
 
-  lua_pushcfunction(m_state, l_get_player);
-  lua_setglobal(m_state, "get_player");
+static void RegisterViewMetaTable(lua_State* L) {
+  luaL_newmetatable(L, "View");
 
-  Player::RegisterClass(m_state);
+  // View.__index = View
+  //lua_pushvalue(L, -1);
+  //lua_setfield(L, -2, "__index");
 
-  std::cout << "Running file" << std::endl;
-  // Load the script file.
-  luaL_dofile(m_state, "C:\\Workspace\\luaui\\scripts\\main.lua");
+  //luaL_setfuncs(L, kViewFunctions, 0);
+}
+
+static int OpenLib_ui(lua_State* L) {
+  // Make sure the global ui table exists.
+  lua_getglobal(L, kUILibName);
+  if (!lua_istable(L, -1)) {
+    lua_pop(L, 1);
+    lua_newtable(L);
+    lua_pushvalue(L, -1);
+    lua_setglobal(L, kUILibName);
+  }
+
+  // Register the getView function.
+  lua_pushcfunction(L, l_getView);
+  lua_setfield(L, -2, "getView");
+
+  StackDump(L);
+
+  // Push the View metatable.
+  RegisterViewMetaTable(L);
+
+  StackDump(L);
+
+  return 1;
+}
+
+}  // namespace
+
+Script::Script() : m_state(nullptr) {
 }
 
 Script::~Script() {
-  lua_close(m_state);
+  if (m_state)
+    lua_close(m_state);
+}
+
+bool Script::Init(Context* context) {
+  // Create the VM.
+  m_state = luaL_newstate();
+
+  // Load the standard libs.
+  luaL_openlibs(m_state);
+
+  // Set a pointer to the context as a global.
+  lua_pushlightuserdata(m_state, context);
+  lua_setglobal(m_state, "context");
+
+  // Require the ui library so that we can just start to use it.
+  luaL_requiref(m_state, "ui", OpenLib_ui, 1);
+
+  // Load the script file.
+  luaL_dofile(m_state, "C:\\Workspace\\luaui\\scripts\\main.lua");
+  const char* error = lua_tostring(m_state, -1);
+  if (error)
+    std::cout << error << std::endl;
+
+  return true;
+}
+
+void Script::RunUiStart() {
+  lua_getglobal(m_state, "ui");
+  lua_getfield(m_state, -1, "start");
+  if (lua_isfunction(m_state, -1))
+    lua_pcall(m_state, 0, 0, 0);
+}
+
+void Script::RunUiStop() {
+  lua_getglobal(m_state, "ui");
+  lua_getfield(m_state, -1, "stop");
+  if (lua_isfunction(m_state, -1))
+    lua_pcall(m_state, 0, 0, 0);
 }

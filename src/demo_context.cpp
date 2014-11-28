@@ -22,6 +22,7 @@ DemoContext::DemoContext() {
   sizer->AddChild(child);
 
   child = new ColorView(this, Color(0, 255, 0));
+  child->SetName("child");
   child->SetMinSize(SizeI(50, 50));
   child->SetExpand(View::EXPAND_HORIZONTAL);
   sizer->AddChild(child);
